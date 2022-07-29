@@ -89,34 +89,29 @@ const displayController = (() => {
     }
   };
 
-  const changeName = (e) => {
-    let selectedPlayer = e.target.id;
-    console.log(selectedPlayer);
-    // document.getElementById("newName").value = e.target.innerHTML;
-    const submitName = () => {
-      let newName = document.getElementById("newName").value;
-      if (newName.length < 1) {
-        return;
-      }
-      document.getElementById(selectedPlayer).innerHTML = newName;
-      document.getElementById("changeNameWindow").style.display = "none";
-    };
-    document.getElementById("changeNameWindow").style.display = "grid";
-    document.getElementById("submitName").addEventListener("click", submitName);
+  const updateNameDisplay = () => {
+    document.getElementById("player1").innerHTML = player1.getName();
+    document.getElementById("player2").innerHTML = player2.getName();
   };
 
-  return { updateDisplay, updateCurrentTurn, changeName };
+  return { updateDisplay, updateCurrentTurn, updateNameDisplay };
 })();
 
 const player = (name, marker) => {
+  const getName = () => {
+    return name;
+  };
+
   const tilePress = (pos) => {
     gameBoard.markTile(pos, marker);
   };
-  return { name, marker, tilePress };
-};
 
-const player1 = player("bob", "x");
-const player2 = player("joe", "o");
+  const changeName = (newName) => {
+    name = newName;
+  };
+
+  return { getName, marker, tilePress, changeName };
+};
 
 const tileClick = (e) => {
   if (turn == 0) {
@@ -125,6 +120,9 @@ const tileClick = (e) => {
     player2.tilePress(e.target.id);
   }
 };
+
+const player1 = player("Player 1", "x");
+const player2 = player("Player 2", "o");
 
 document.querySelectorAll(".boardTile").forEach((item) => {
   item.addEventListener("click", tileClick);
@@ -137,9 +135,61 @@ const restartBtn = () => {
   displayController.updateCurrentTurn();
 };
 
-document.querySelectorAll(".playerName").forEach((item) => {
-  item.addEventListener("click", displayController.changeName);
-});
+const player1_nameChange = () => {
+  document.getElementById("newName1").value = player1.getName();
+
+  const closeWindow = () => {
+    document.getElementById("changeNameWindow1").style.display = "none";
+  };
+
+  const submitName = () => {
+    let newName = document.getElementById("newName1").value;
+    if (newName.length < 1) {
+      return;
+    }
+    player1.changeName(newName);
+    displayController.updateNameDisplay();
+
+    document.getElementById("changeNameWindow1").style.display = "none";
+  };
+  document.getElementById("submitName1").addEventListener("click", submitName);
+  document
+    .getElementById("closeButton1")
+    .addEventListener("click", closeWindow);
+  document.getElementById("changeNameWindow1").style.display = "grid";
+};
+
+const player2_nameChange = () => {
+  document.getElementById("newName2").value = player2.getName();
+
+  const closeWindow = () => {
+    document.getElementById("changeNameWindow2").style.display = "none";
+  };
+
+  const submitName = () => {
+    let newName = document.getElementById("newName2").value;
+    if (newName.length < 1) {
+      return;
+    }
+    player2.changeName(newName);
+    displayController.updateNameDisplay();
+
+    document.getElementById("changeNameWindow2").style.display = "none";
+  };
+  document.getElementById("submitName2").addEventListener("click", submitName);
+  document
+    .getElementById("closeButton2")
+    .addEventListener("click", closeWindow);
+  document.getElementById("changeNameWindow2").style.display = "grid";
+};
+
+document
+  .getElementById("player1")
+  .addEventListener("click", player1_nameChange);
+
+document
+  .getElementById("player2")
+  .addEventListener("click", player2_nameChange);
 
 displayController.updateDisplay();
 displayController.updateCurrentTurn();
