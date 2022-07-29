@@ -89,34 +89,38 @@ const displayController = (() => {
     }
   };
 
-  const changeName = (e) => {
-    let selectedPlayer = e.target.id;
-    console.log(selectedPlayer);
-    // document.getElementById("newName").value = e.target.innerHTML;
-    const submitName = () => {
-      let newName = document.getElementById("newName").value;
-      if (newName.length < 1) {
-        return;
-      }
-      document.getElementById(selectedPlayer).innerHTML = newName;
-      document.getElementById("changeNameWindow").style.display = "none";
-    };
-    document.getElementById("changeNameWindow").style.display = "grid";
-    document.getElementById("submitName").addEventListener("click", submitName);
+  const updateNameDisplay = (player) => {
+    document.getElementById(player).innerHTML = player.name;
   };
 
-  return { updateDisplay, updateCurrentTurn, changeName };
+  return { updateDisplay, updateCurrentTurn, updateNameDisplay };
 })();
 
 const player = (name, marker) => {
   const tilePress = (pos) => {
     gameBoard.markTile(pos, marker);
   };
-  return { name, marker, tilePress };
+
+  const changeName = () => {
+    document.getElementById("newName").value = name;
+    const submitName = () => {
+      let newName = document.getElementById("newName").value;
+      if (newName.length < 1) {
+        return;
+      }
+      name = newName;
+      // displayController.updateNameDisplay(this.player);
+      console.log(this.player);
+      document.getElementById("changeNameWindow").style.display = "none";
+    };
+    document.getElementById("changeNameWindow").style.display = "grid";
+    document.getElementById("submitName").addEventListener("click", submitName);
+  };
+  return { name, marker, tilePress, changeName };
 };
 
-const player1 = player("bob", "x");
-const player2 = player("joe", "o");
+const player1 = player("Player 1", "x");
+const player2 = player("Player 2", "o");
 
 const tileClick = (e) => {
   if (turn == 0) {
@@ -137,9 +141,13 @@ const restartBtn = () => {
   displayController.updateCurrentTurn();
 };
 
-document.querySelectorAll(".playerName").forEach((item) => {
-  item.addEventListener("click", displayController.changeName);
-});
+document
+  .getElementById("player1")
+  .addEventListener("click", player1.changeName);
+
+document
+  .getElementById("player2")
+  .addEventListener("click", player2.changeName);
 
 displayController.updateDisplay();
 displayController.updateCurrentTurn();

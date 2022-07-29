@@ -134,7 +134,7 @@ div.enterNewName {
 
 input#newName {
     width: 300px;
-    height: 30px;
+    height: 40px;
     align-self: center;
     justify-self: center;
     font-size: 2rem;
