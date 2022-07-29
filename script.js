@@ -1,4 +1,5 @@
 let turn = 0;
+let counter = 0;
 
 const gameBoard = (() => {
   let gameBoardArray = ["", "", "", "", "", "", "", "", ""];
@@ -18,6 +19,7 @@ const gameBoard = (() => {
         return;
       }
       turn = turn == 0 ? 1 : 0;
+      counter++;
       displayController.updateCurrentTurn();
     }
   };
@@ -49,13 +51,23 @@ const gameBoard = (() => {
         return true;
       }
     }
+    if (counter == 8) {
+      displayController.drawDisplay();
+    }
   };
 
   const winHandler = () => {
+    document.querySelectorAll(".boardTile").forEach((item) => {
+      item.removeEventListener("click", tileClick);
+    });
     if (turn == 0) {
-      console.log("x wins");
+      document.getElementById(
+        "winnerDisplay"
+      ).innerHTML = `${player1.getName()} won!`;
     } else {
-      console.log("o wins");
+      document.getElementById(
+        "winnerDisplay"
+      ).innerHTML = `${player2.getName()} won!`;
     }
   };
 
@@ -94,7 +106,21 @@ const displayController = (() => {
     document.getElementById("player2").innerHTML = player2.getName();
   };
 
-  return { updateDisplay, updateCurrentTurn, updateNameDisplay };
+  const clearWinnerDisplay = () => {
+    document.getElementById("winnerDisplay").innerHTML = "";
+  };
+
+  const drawDisplay = () => {
+    document.getElementById("winnerDisplay").innerHTML = "Draw!";
+  };
+
+  return {
+    updateDisplay,
+    updateCurrentTurn,
+    updateNameDisplay,
+    clearWinnerDisplay,
+    drawDisplay,
+  };
 })();
 
 const player = (name, marker) => {
@@ -130,7 +156,15 @@ document.querySelectorAll(".boardTile").forEach((item) => {
 
 const restartBtn = () => {
   turn = 0;
+  counter = 0;
+  document.querySelectorAll(".boardTile").forEach((item) => {
+    item.removeEventListener("click", tileClick);
+  });
+  document.querySelectorAll(".boardTile").forEach((item) => {
+    item.addEventListener("click", tileClick);
+  });
   gameBoard.clearArray();
+  displayController.clearWinnerDisplay();
   displayController.updateDisplay();
   displayController.updateCurrentTurn();
 };
@@ -193,3 +227,7 @@ document
 
 displayController.updateDisplay();
 displayController.updateCurrentTurn();
+
+// document.querySelectorAll(".boardTile").forEach((item) => {
+//   item.removeEventListener("click", tileClick);
+// });
